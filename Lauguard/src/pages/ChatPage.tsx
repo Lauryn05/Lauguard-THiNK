@@ -13,14 +13,34 @@ interface Message {
   isUser: boolean;
 }
 
+// Available models – keep in sync with backend
+const models = [
+  {
+    value: 'meta-llama/Llama-3.1-8B-Instruct',
+    label: 'Llama 3.1 8B'
+  }
+];
+
 const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, content: "Hello! How can I assist you today?", isUser: false }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(
+    'meta-llama/Llama-3.1-8B-Instruct'
+  );
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Optionally read initial model from URL (if passed from Index)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const modelFromUrl = params.get('model');
+    if (modelFromUrl && models.some(m => m.value === modelFromUrl)) {
+      setSelectedModel(modelFromUrl);
+    }
+  }, []);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -44,22 +64,21 @@ const ChatPage: React.FC = () => {
     setIsTyping(true);
 
     try {
-      // Get user info from JWT/localStorage
       const token = localStorage.getItem('token');
-      const username = localStorage.getItem('username') || 'Guest';
       let userPayload: { user_id?: number; department_id?: number } = {};
       if (token) {
         userPayload = JSON.parse(atob(token.split('.')[1]));
       }
 
-      // Log prompt to Flask backend (includes status, severity, user_id, department_id)
+      // Send to backend with selected model
       const logRes = await fetch('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: maskedInput,
           user_id: userPayload.user_id,
-          department_id: userPayload.department_id
+          department_id: userPayload.department_id,
+          model: selectedModel   // <-- include selected model
         })
       });
 
@@ -108,12 +127,25 @@ const ChatPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header with model dropdown */}
       <header className="border-b bg-white px-6 py-4">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <Link to="/" className="text-xl font-bold text-guard-blue">LauGuard</Link>
 
           <div className="flex items-center gap-4">
+            {/* Model selection dropdown */}
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              className="border rounded px-2 py-1 text-sm bg-white"
+            >
+              {models.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+
             <Button variant="outline" asChild>
               <Link to="/admin-login">Admin Login</Link>
             </Button>
@@ -129,7 +161,7 @@ const ChatPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Chat Messages */}
+      {/* Chat Messages (unchanged) */}
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-4xl mx-auto space-y-4">
           {messages.map((message) => (
@@ -151,7 +183,7 @@ const ChatPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Input Area */}
+      {/* Input Area (unchanged) */}
       <div className="border-t bg-white p-4">
         <div className="max-w-4xl mx-auto flex gap-2">
           <Textarea

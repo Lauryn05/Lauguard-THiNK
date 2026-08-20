@@ -25,10 +25,40 @@ except Exception as e:
 
 load_dotenv()
 API_KEY = os.getenv("AIMLAPI_KEY")
-DB_URL = os.getenv("DATABASE_URL")
+USE_INTERNAL = os.getenv("USE_INTERNAL", "false").lower() == "true"
+USE_EXTERNAL = os.getenv("USE_EXTERNAL", "false").lower() == "true"
+is_internal = USE_INTERNAL or not USE_EXTERNAL
 
-conn = psycopg2.connect(DB_URL, cursor_factory=RealDictCursor)
+host_key = "DB_HOST_INTERNAL" if is_internal else "DB_HOST_EXTERNAL"
+port_key = "DB_PORT_INTERNAL" if is_internal else "DB_PORT_EXTERNAL"
 
+db_host = os.getenv(host_key)
+db_port = os.getenv(port_key)
+db_name = os.getenv("DB_DATABASE", "postgres")
+db_user = os.getenv("DB_USER", "postgres")
+db_password = os.getenv("DB_PASSWORD")
+
+# Fallback defaults (if not set)
+if not db_host:
+    db_host = "lab-laguarddb-ooomok" if is_internal else "your-dokploy-public-ip"
+if not db_port:
+    db_port = "5432" if is_internal else "5450"
+
+# SSL – only if DB_SSL=true
+if os.getenv("DB_SSL", "false").lower() == "true":
+    ssl_params = {"sslmode": "require"}
+else:
+    ssl_params = {}
+
+conn = psycopg2.connect(
+    host=db_host,
+    port=db_port,
+    dbname=db_name,
+    user=db_user,
+    password=db_password,
+    cursor_factory=RealDictCursor,
+    **ssl_params
+)
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])
 

@@ -25,3 +25,13 @@ venv/
 dist/
 build/
 .next/
+
+node_modules/
+*.safetensors
+*.pt
+*.pth
+*.bin
+
+.env
+.env.*
+!.env.example

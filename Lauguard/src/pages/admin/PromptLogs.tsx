@@ -17,7 +17,7 @@ const PromptLogs: React.FC = () => {
 
   // Fetch logs from backend
   useEffect(() => {
-    axios.get('http://localhost:5000/api/prompts/logs')
+    axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts/logs`)
       .then(res => setLogs(res.data))
       .catch(err => console.error('Error fetching logs:', err));
   }, []);

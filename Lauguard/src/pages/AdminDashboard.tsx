@@ -27,7 +27,7 @@ const AdminDashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch stats
-        const statsRes = await axios.get('http://localhost:5000/api/prompts/stats');
+        const statsRes = await axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts/stats`);
         setStats({
           totalPrompts: statsRes.data?.totalPrompts || 0,
           adversarialAttempts: statsRes.data?.adversarialAttempts || 0,
@@ -36,7 +36,7 @@ const AdminDashboard: React.FC = () => {
         });
 
         // Fetch weekly data
-        const timelineRes = await axios.get('http://localhost:5000/api/prompts/timeline');
+        const timelineRes = await axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts/timeline`);
         const mappedData = (timelineRes.data || []).map((item: any) => ({
           name: item?.name || 'Unknown',
           prompts: item?.prompts || 0,

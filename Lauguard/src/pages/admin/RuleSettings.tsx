@@ -47,7 +47,7 @@ const RuleSettings: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get('http://localhost:5000/api/rules');
+      const res = await axios.get(`${import.meta.env.VITE_NODE_API_URL}api/rules`);
       const mappedRules = res.data.map((r: any) => ({
         id: r.id,
         name: r.name,
@@ -79,7 +79,7 @@ const RuleSettings: React.FC = () => {
     try {
       new RegExp(newRule.pattern); // validate regex
 
-      const res = await axios.post('http://localhost:5000/api/rules', {
+      const res = await axios.post(`${import.meta.env.VITE_NODE_API_URL}api/rules`, {
         name: newRule.name,
         pattern: newRule.pattern,
         replacement: newRule.replacement,
@@ -115,7 +115,7 @@ const RuleSettings: React.FC = () => {
     const newStatus = rule.active ? 'disabled' : 'enabled';
 
     try {
-      await axios.patch(`http://localhost:5000/api/rules/${id}`, { status: newStatus });
+      await axios.patch(`${import.meta.env.VITE_NODE_API_URL}api/rules/${id}`, { status: newStatus });
       setRules(rules.map(r => r.id === id ? { ...r, active: !r.active } : r));
 
       toast({
@@ -145,7 +145,7 @@ const RuleSettings: React.FC = () => {
     try {
       new RegExp(selectedRule.pattern);
 
-      await axios.patch(`http://localhost:5000/api/rules/${selectedRule.id}`, {
+      await axios.patch(`${import.meta.env.VITE_NODE_API_URL}api/rules/${selectedRule.id}`, {
         name: selectedRule.name,
         pattern: selectedRule.pattern,
         replacement: selectedRule.replacement,

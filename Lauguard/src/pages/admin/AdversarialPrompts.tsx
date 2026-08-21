@@ -13,15 +13,15 @@ const AdversarialPrompts: React.FC = () => {
   const [adversarialPrompts, setAdversarialPrompts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/prompts/by-department')
+    axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts/by-department`)
       .then(res => setDepartmentData(res.data))
       .catch(err => console.error(err));
 
-    axios.get('http://localhost:5000/api/prompts/timeline')
+    axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts/timeline`)
       .then(res => setTimelineData(res.data))
       .catch(err => console.error(err));
 
-    axios.get('http://localhost:5000/api/prompts')
+    axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts`)
       .then(res => setAdversarialPrompts(res.data))
       .catch(err => console.error(err));
   }, []);

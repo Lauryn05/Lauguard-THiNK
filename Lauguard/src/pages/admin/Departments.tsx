@@ -33,7 +33,7 @@ const Departments: React.FC = () => {
   setLoading(true);
   setError(null);
   try {
-    const res = await axios.get('http://localhost:5000/api/prompts/departments');
+    const res = await axios.get(`${import.meta.env.VITE_NODE_API_URL}api/prompts/departments`);
     console.log('API response:', res.data);
 
     if (!Array.isArray(res.data)) throw new Error('Invalid API response');
@@ -67,7 +67,7 @@ const Departments: React.FC = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/prompts/departmentsadd', { name: newDepartmentName });
+      await axios.post(`${import.meta.env.VITE_NODE_API_URL}api/prompts/departmentsadd`, { name: newDepartmentName });
       toast({ title: "Success", description: `Department "${newDepartmentName}" has been created` });
       setNewDepartmentName('');
       setIsDialogOpen(false);
@@ -81,7 +81,7 @@ const Departments: React.FC = () => {
   const toggleStatus = async (id: number, currentStatus: 'active' | 'inactive') => {
   const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
   try {
-    const res = await axios.patch(`http://localhost:5000/api/prompts/departments/${id}`, { status: newStatus });
+    const res = await axios.patch(`${import.meta.env.VITE_NODE_API_URL}api/prompts/departments/${id}`, { status: newStatus });
 
     // Optimistically update the state so UI reflects change immediately
     setDepartments(departments.map(d => 

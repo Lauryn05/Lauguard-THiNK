@@ -1,0 +1,9 @@
+Flask
+flask-cors
+requests
+python-dotenv
+psycopg2-binary
+torch
+numpy
+transformers
+huggingface-hub

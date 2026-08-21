@@ -1,4 +1,4 @@
-from flask import Flask, app, request, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests, os, traceback
 from dotenv import load_dotenv
@@ -9,6 +9,11 @@ import torch
 import numpy as np
 from rl_agent import RLAgent
 from huggingface_hub import hf_hub_download, InferenceClient
+
+load_dotenv()
+
+app = Flask(__name__)
+CORS(app, origins=[os.getenv("FRONTEND_URL", "http://localhost:5173")])
 
 load_dotenv()
 HF_API_KEY = os.getenv("HF_API_KEY")
@@ -71,8 +76,6 @@ conn = psycopg2.connect(
     cursor_factory=RealDictCursor,
     **ssl_params
 )
-
-CORS(app, origins=[os.getenv("FRONTEND_URL", "http://localhost:5173")])
 
 def call_huggingface_model(prompt: str, model_id: str) -> str:
     try:

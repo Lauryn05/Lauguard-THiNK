@@ -18,6 +18,18 @@ const models = [
   {
     value: 'meta-llama/Llama-3.1-8B-Instruct',
     label: 'Llama 3.1 8B'
+  },
+  {
+    value: 'Qwen/Qwen2.5-7B-Instruct-1M',
+    label: 'Qwen 2.5 7B'
+  },
+  {
+    value: 'google/gemma-2-2b-it',
+    label: 'Gemma 2 2B'
+  },
+  {
+    value: 'deepseek-ai/DeepSeek-R1',
+    label: 'DeepSeek R1'
   }
 ];
 

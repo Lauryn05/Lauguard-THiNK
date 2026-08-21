@@ -15,7 +15,7 @@ const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
 
   try {
-    const res = await fetch('http://localhost:5000/api/auth/user-login', {
+    const res = await fetch(`${import.meta.env.VITE_NODE_API_URL}api/auth/user-login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, passwd: password })

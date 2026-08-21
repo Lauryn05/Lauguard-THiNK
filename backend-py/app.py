@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, app, request, jsonify
 from flask_cors import CORS
 import requests, os, traceback
 from dotenv import load_dotenv
@@ -72,8 +72,7 @@ conn = psycopg2.connect(
     **ssl_params
 )
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173"])
+CORS(app, origins=[os.getenv("FRONTEND_URL", "http://localhost:5173")])
 
 def call_huggingface_model(prompt: str, model_id: str) -> str:
     try:

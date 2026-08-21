@@ -83,7 +83,7 @@ const ChatPage: React.FC = () => {
       }
 
       // Send to backend with selected model
-      const logRes = await fetch('http://localhost:8000/api/chat', {
+      const logRes = await fetch(`${import.meta.env.VITE_FLASK_API_URL}api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
